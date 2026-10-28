@@ -14,11 +14,11 @@ jobs:
   ipa:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '10.0.401'
 
       - name: Select newest stable Xcode
         run: |
@@ -27,8 +27,14 @@ jobs:
           sudo xcode-select -s "$XCODE"
           xcodebuild -version
 
+      # The latest iOS workload needs a newer Xcode than the runner has.
+      # Pin it to the one matching Xcode 26.5; bump both together.
       - name: Install iOS workload
-        run: dotnet workload install ios
+        run: |
+          dotnet workload config --update-mode manifests
+          echo '{"microsoft.net.sdk.ios": "26.5.10301/10.0.100"}' > rollback.json
+          dotnet workload install ios --from-rollback-file rollback.json
+          dotnet workload list
 
       - name: Build
         run: >
