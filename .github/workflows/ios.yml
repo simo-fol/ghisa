@@ -20,15 +20,17 @@ jobs:
         with:
           dotnet-version: '10.0.401'
 
-      - name: Select newest stable Xcode
+      # Xcode and the iOS workload below must match: bump both together.
+      - name: Select Xcode 26.5
         run: |
-          XCODE=$(ls -d /Applications/Xcode_*.app | grep -vi beta | sort -V | tail -1)
+          ls -d /Applications/Xcode*.app
+          XCODE=$(ls -d /Applications/Xcode_26.5*.app | grep -vi beta | sort -V | tail -1)
           echo "Using $XCODE"
           sudo xcode-select -s "$XCODE"
           xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
 
       # The latest iOS workload needs a newer Xcode than the runner has.
-      # Pin it to the one matching Xcode 26.5; bump both together.
       - name: Install iOS workload
         run: |
           dotnet workload config --update-mode manifests
