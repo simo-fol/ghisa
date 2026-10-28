@@ -1,0 +1,109 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WorkoutLog.ViewModels"
+             x:Class="WorkoutLog.Views.HomeView"
+             x:DataType="vm:HomeViewModel">
+    <Grid>
+        <!-- No file yet -->
+        <StackPanel IsVisible="{Binding !HasBook}" VerticalAlignment="Center" Margin="28" Spacing="18">
+            <Border Width="84" Height="84" CornerRadius="26" Background="{StaticResource AccentSoft}" HorizontalAlignment="Left">
+                <TextBlock Text="🏋" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+            <TextBlock Text="La tua scheda,&#x0a;sempre in tasca." FontSize="34" FontWeight="Bold" LineHeight="40" />
+            <TextBlock Classes="muted" FontSize="16" TextWrapping="Wrap"
+                       Text="Carica il file Excel del coach: scegli lo split e l'app ti guida esercizio per esercizio, con i carichi della volta scorsa e il timer di recupero." />
+            <Button Classes="primary" Content="Carica la scheda Excel" HorizontalAlignment="Stretch"
+                    Command="{Binding ImportCommand}" Margin="0,12,0,0" />
+        </StackPanel>
+
+        <!-- Main screen -->
+        <ScrollViewer IsVisible="{Binding HasBook}">
+            <StackPanel Margin="18,14,18,32" Spacing="14">
+                <Grid ColumnDefinitions="*,Auto,Auto" Margin="2,4,0,4">
+                    <StackPanel Spacing="2">
+                        <TextBlock Classes="label" Text="ALLENAMENTO" />
+                        <TextBlock Text="{Binding Title}" FontSize="28" FontWeight="Bold" TextTrimming="CharacterEllipsis" />
+                        <TextBlock Classes="muted" Text="{Binding Subtitle}" FontSize="13" />
+                    </StackPanel>
+                    <Button Grid.Column="1" Classes="round" Content="⇪" FontSize="17" Margin="0,0,8,0"
+                            Command="{Binding ShareCommand}" ToolTip.Tip="Condividi / esporta Excel" />
+                    <Button Grid.Column="2" Classes="round" Content="↻" FontSize="18"
+                            Command="{Binding ImportCommand}" ToolTip.Tip="Carica un'altra scheda" />
+                </Grid>
+
+                <ComboBox IsVisible="{Binding HasManyProtocols}" ItemsSource="{Binding Protocols}"
+                          SelectedIndex="{Binding SelectedProtocol}" HorizontalAlignment="Stretch"
+                          Background="{StaticResource Surface}" BorderThickness="0" CornerRadius="14"
+                          Padding="14,10" FontSize="15" />
+
+                <!-- Workout in progress -->
+                <Border IsVisible="{Binding HasDraft}" Classes="card" Background="{StaticResource AccentSoft}"
+                        BorderBrush="{StaticResource Accent}" BorderThickness="1">
+                    <Grid ColumnDefinitions="*,Auto,Auto" RowDefinitions="Auto,Auto">
+                        <TextBlock Classes="label" Text="IN CORSO" Foreground="{StaticResource Accent}" />
+                        <TextBlock Grid.Row="1" Text="{Binding DraftLabel}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,2,8,0" />
+                        <Button Grid.Column="1" Grid.RowSpan="2" Classes="pill" Content="Scarta" Margin="0,0,8,0"
+                                Command="{Binding DiscardDraftCommand}" />
+                        <Button Grid.Column="2" Grid.RowSpan="2" Classes="pill" Content="Riprendi"
+                                Background="{StaticResource Accent}" Foreground="{StaticResource OnAccent}"
+                                Command="{Binding ResumeDraftCommand}" />
+                    </Grid>
+                </Border>
+
+                <TextBlock Classes="label" Text="SCEGLI LO SPLIT DI OGGI" Margin="2,6,0,0" />
+
+                <ItemsControl ItemsSource="{Binding Splits}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate><StackPanel Spacing="12" /></ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:SplitCardViewModel">
+                            <Border Classes="card" Padding="0">
+                                <Grid RowDefinitions="Auto,Auto">
+                                    <Button Classes="flat" Command="{Binding StartCommand}" CornerRadius="22">
+                                        <Grid ColumnDefinitions="Auto,*,Auto" Margin="16,16,16,10">
+                                            <Border Width="62" Height="62" CornerRadius="18" Background="{StaticResource Accent}">
+                                                <TextBlock Text="{Binding Letter}" FontSize="32" FontWeight="Black"
+                                                           Foreground="{StaticResource OnAccent}"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </Border>
+                                            <StackPanel Grid.Column="1" Margin="14,0,8,0" VerticalAlignment="Center" Spacing="3">
+                                                <TextBlock Text="{Binding Letter, StringFormat='Split {0}'}" FontSize="19" FontWeight="Bold" />
+                                                <TextBlock Classes="muted" Text="{Binding Preview}" FontSize="13"
+                                                           TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis" />
+                                            </StackPanel>
+                                            <TextBlock Grid.Column="2" Text="›" FontSize="30" Classes="muted" VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Button>
+                                    <Border Grid.Row="1" BorderBrush="{StaticResource Line}" BorderThickness="0,1,0,0" Padding="8,6">
+                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                            <Button Classes="round" Content="‹" Background="Transparent" Command="{Binding PreviousCommand}" />
+                                            <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="1">
+                                                <TextBlock Text="{Binding SlotLabel}" FontSize="13" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                                                <TextBlock Text="{Binding StatusLabel}" FontSize="10" FontWeight="Bold" LetterSpacing="1"
+                                                           HorizontalAlignment="Center"
+                                                           Classes="status" Classes.warn="{Binding IsFilled}" />
+                                            </StackPanel>
+                                            <Button Grid.Column="2" Classes="round" Content="›" Background="Transparent" Command="{Binding NextCommand}" />
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Classes="muted" Text="{Binding FileName}" FontSize="11" HorizontalAlignment="Center" Margin="0,8,0,0" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+
+    <UserControl.Styles>
+        <Style Selector="TextBlock.status">
+            <Setter Property="Foreground" Value="{StaticResource Accent}" />
+        </Style>
+        <Style Selector="TextBlock.status.warn">
+            <Setter Property="Foreground" Value="{StaticResource Warm}" />
+        </Style>
+    </UserControl.Styles>
+</UserControl>

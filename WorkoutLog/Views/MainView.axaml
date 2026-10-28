@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WorkoutLog.ViewModels"
+             x:Class="WorkoutLog.Views.MainView"
+             x:DataType="vm:MainViewModel"
+             Background="{StaticResource Bg}">
+    <Grid>
+        <ContentControl Content="{Binding CurrentPage}" />
+
+        <Border IsVisible="{Binding Toast, Converter={x:Static ObjectConverters.IsNotNull}}"
+                VerticalAlignment="Top" HorizontalAlignment="Center" Margin="16,12"
+                Background="{StaticResource Surface3}" CornerRadius="16" Padding="16,12"
+                BoxShadow="0 8 24 0 #66000000">
+            <TextBlock Text="{Binding Toast}" FontWeight="SemiBold" TextWrapping="Wrap" />
+        </Border>
+    </Grid>
+</UserControl>

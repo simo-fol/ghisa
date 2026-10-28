@@ -1,0 +1,194 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WorkoutLog.ViewModels"
+             x:Class="WorkoutLog.Views.WorkoutView"
+             x:DataType="vm:WorkoutViewModel">
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Header -->
+        <Grid ColumnDefinitions="Auto,*,Auto" Margin="12,10,18,8">
+            <Button Classes="round" Content="‹" FontSize="26" Background="Transparent" Command="{Binding BackCommand}" />
+            <StackPanel Grid.Column="1" Margin="6,0" VerticalAlignment="Center">
+                <TextBlock Text="{Binding Title}" FontSize="22" FontWeight="Bold" />
+                <TextBlock Classes="muted" Text="{Binding SlotLabel}" FontSize="13" />
+            </StackPanel>
+            <Border Grid.Column="2" Classes="chip" Background="{StaticResource AccentSoft}" VerticalAlignment="Center">
+                <TextBlock Text="{Binding ProgressText}" FontWeight="Bold" Foreground="{StaticResource Accent}" />
+            </Border>
+        </Grid>
+        <ProgressBar Grid.Row="0" VerticalAlignment="Bottom" Height="3" MinHeight="3" Margin="18,0"
+                     Minimum="0" Maximum="1" Value="{Binding Progress}"
+                     Foreground="{StaticResource Accent}" Background="{StaticResource Surface2}" />
+
+        <!-- Exercises -->
+        <ScrollViewer Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding Exercises}" Margin="14,12,14,20">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate><StackPanel Spacing="10" /></ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ExerciseViewModel">
+                        <Border Classes="card exercise" Classes.complete="{Binding IsComplete}"
+                                Classes.open="{Binding IsExpanded}" Padding="0">
+                            <StackPanel>
+                                <Button Classes="flat" Command="{Binding ToggleCommand}" CornerRadius="22">
+                                    <Grid ColumnDefinitions="*,Auto" Margin="16,14,14,12">
+                                        <StackPanel Spacing="7">
+                                            <TextBlock Text="{Binding Name}" FontSize="17" FontWeight="Bold" TextWrapping="Wrap" />
+                                            <WrapPanel ItemSpacing="6" LineSpacing="6">
+                                                <Border Classes="chip" IsVisible="{Binding HasRepGoal}">
+                                                    <TextBlock FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap">
+                                                        <Run Text="🎯 " /><Run Text="{Binding RepGoal}" />
+                                                    </TextBlock>
+                                                </Border>
+                                                <Border Classes="chip">
+                                                    <TextBlock Text="{Binding SetsText}" FontSize="12" FontWeight="SemiBold" />
+                                                </Border>
+                                            </WrapPanel>
+                                        </StackPanel>
+                                        <Border Grid.Column="1" Classes="badge" VerticalAlignment="Top" Margin="10,0,0,0">
+                                            <TextBlock Text="{Binding ProgressText}" FontSize="13" FontWeight="Bold" />
+                                        </Border>
+                                    </Grid>
+                                </Button>
+
+                                <!-- Last time -->
+                                <Border IsVisible="{Binding HasLast}" Margin="16,0,16,12" Padding="12,9"
+                                        CornerRadius="12" Background="{StaticResource Surface2}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Classes="label" Text="ULTIMA VOLTA" FontSize="10" />
+                                        <TextBlock Text="{Binding LastLoad}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap" />
+                                        <TextBlock Classes="muted" Text="{Binding LastWhere}" FontSize="11" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Expanded body -->
+                                <StackPanel IsVisible="{Binding IsExpanded}" Margin="16,0,16,16" Spacing="12">
+                                    <Border IsVisible="{Binding HasCoachNote}" Padding="12,10" CornerRadius="12"
+                                            Background="#1FFFB547" BorderBrush="#55FFB547" BorderThickness="1">
+                                        <TextBlock TextWrapping="Wrap" FontSize="14">
+                                            <Run Text="Coach: " FontWeight="Bold" Foreground="{StaticResource Warm}" /><Run Text="{Binding CoachNote}" />
+                                        </TextBlock>
+                                    </Border>
+
+                                    <Grid ColumnDefinitions="26,*,*,52" Margin="0,4,0,-4">
+                                        <TextBlock Classes="label" Text="#" />
+                                        <TextBlock Grid.Column="1" Classes="label" Text="KG" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" Classes="label" Text="REPS" HorizontalAlignment="Center" />
+                                    </Grid>
+
+                                    <ItemsControl ItemsSource="{Binding Sets}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate><StackPanel Spacing="8" /></ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:SetViewModel">
+                                                <Border Classes="setrow" Classes.done="{Binding Done}" CornerRadius="16" Padding="6">
+                                                    <Grid ColumnDefinitions="22,*,6,*,6,Auto">
+                                                        <TextBlock Text="{Binding Number}" FontWeight="Bold" Classes="muted"
+                                                                   VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                                        <Grid Grid.Column="1" ColumnDefinitions="Auto,*,Auto">
+                                                            <Button Classes="round" Content="−" Command="{Binding KgDownCommand}" />
+                                                            <TextBox Grid.Column="1" Classes="value" Text="{Binding Kg}" PlaceholderText="–"
+                                                                     TextInputOptions.ContentType="Number" />
+                                                            <Button Grid.Column="2" Classes="round" Content="+" Command="{Binding KgUpCommand}" />
+                                                        </Grid>
+                                                        <Grid Grid.Column="3" ColumnDefinitions="Auto,*,Auto">
+                                                            <Button Classes="round" Content="−" Command="{Binding RepsDownCommand}" />
+                                                            <TextBox Grid.Column="1" Classes="value" Text="{Binding Reps}" PlaceholderText="–"
+                                                                     TextInputOptions.ContentType="Digits" />
+                                                            <Button Grid.Column="2" Classes="round" Content="+" Command="{Binding RepsUpCommand}" />
+                                                        </Grid>
+                                                        <Button Grid.Column="5" Classes="check" Classes.done="{Binding Done}"
+                                                                Content="✓" Command="{Binding ToggleDoneCommand}" />
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <Grid ColumnDefinitions="Auto,Auto,*,Auto">
+                                        <Button Classes="pill" Content="+ Serie" Command="{Binding AddSetCommand}" Margin="0,0,8,0" />
+                                        <Button Grid.Column="1" Classes="pill" Content="− Serie" Command="{Binding RemoveSetCommand}" />
+                                        <Button Grid.Column="3" Classes="pill" Command="{Binding CycleRestCommand}"
+                                                ToolTip.Tip="Tocca per cambiare il recupero">
+                                            <TextBlock>
+                                                <Run Text="⏱ Recupero " /><Run Text="{Binding RestLabel}" FontWeight="Bold" />
+                                            </TextBlock>
+                                        </Button>
+                                    </Grid>
+
+                                    <TextBox Classes="note" Text="{Binding UserNote}" MinHeight="46"
+                                             PlaceholderText="Le tue note (sedile 4, presa larga…)" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Bottom: rest timer + finish -->
+        <Border Grid.Row="2" Background="{StaticResource Surface}" CornerRadius="24,24,0,0" Padding="16,14,16,16">
+            <StackPanel Spacing="12">
+                <Grid IsVisible="{Binding Timer.IsRunning}" ColumnDefinitions="Auto,*,Auto">
+                    <Button Classes="round" Content="−15" FontSize="13" Width="50" Height="50" CornerRadius="25"
+                            Command="{Binding Timer.Remove15Command}" />
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" Spacing="2">
+                        <TextBlock Text="{Binding Timer.Remaining}" FontSize="40" FontWeight="Black"
+                                   HorizontalAlignment="Center" Classes="timer" Classes.finished="{Binding Timer.IsFinished}" />
+                        <TextBlock Classes="muted" Text="{Binding Timer.Caption}" FontSize="12"
+                                   HorizontalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                        <ProgressBar Minimum="0" Maximum="1" Value="{Binding Timer.Progress}" Height="4" MinHeight="4"
+                                     Margin="0,6,0,0" Width="180"
+                                     Foreground="{StaticResource Accent}" Background="{StaticResource Surface2}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Spacing="6">
+                        <Button Classes="round" Content="+15" FontSize="13" Width="50" Height="50" CornerRadius="25"
+                                Command="{Binding Timer.Add15Command}" />
+                    </StackPanel>
+                </Grid>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Button Classes="primary" Content="Termina e salva" HorizontalAlignment="Stretch"
+                            Command="{Binding FinishCommand}" />
+                    <Button Grid.Column="1" IsVisible="{Binding Timer.IsRunning}" Content="Salta" Margin="10,0,0,0"
+                            MinHeight="56" Padding="18,0" CornerRadius="18" FontWeight="SemiBold"
+                            Command="{Binding Timer.StopCommand}" />
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+
+    <UserControl.Styles>
+        <Style Selector="Border.exercise">
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="Border.exercise.open">
+            <Setter Property="BorderBrush" Value="{StaticResource Surface3}" />
+        </Style>
+        <Style Selector="Border.exercise.complete">
+            <Setter Property="BorderBrush" Value="#66C6F24E" />
+        </Style>
+        <Style Selector="Border.badge">
+            <Setter Property="Background" Value="{StaticResource Surface2}" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Padding" Value="10,5" />
+        </Style>
+        <Style Selector="Border.exercise.complete Border.badge">
+            <Setter Property="Background" Value="{StaticResource Accent}" />
+        </Style>
+        <Style Selector="Border.exercise.complete Border.badge > TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource OnAccent}" />
+        </Style>
+        <Style Selector="Border.setrow">
+            <Setter Property="Background" Value="{StaticResource Surface2}" />
+        </Style>
+        <Style Selector="Border.setrow.done">
+            <Setter Property="Background" Value="{StaticResource AccentSoft}" />
+        </Style>
+        <Style Selector="TextBlock.timer.finished">
+            <Setter Property="Foreground" Value="{StaticResource Accent}" />
+        </Style>
+    </UserControl.Styles>
+</UserControl>

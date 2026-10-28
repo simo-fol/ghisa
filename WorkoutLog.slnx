@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="WorkoutLog.Core/WorkoutLog.Core.csproj" />
+  <Project Path="WorkoutLog/WorkoutLog.csproj" />
+  <Project Path="WorkoutLog.Desktop/WorkoutLog.Desktop.csproj" />
+  <Project Path="WorkoutLog.iOS/WorkoutLog.iOS.csproj">
+    <Deploy />
+  </Project>
+</Solution>

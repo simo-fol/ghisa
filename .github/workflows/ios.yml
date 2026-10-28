@@ -1,0 +1,61 @@
+name: iOS build
+
+# Builds an unsigned .ipa on a free macOS runner. SideStore/AltStore sign it
+# with your free Apple ID when you install it on the iPhone.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ipa:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Select newest stable Xcode
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_*.app | grep -vi beta | sort -V | tail -1)
+          echo "Using $XCODE"
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+
+      - name: Install iOS workload
+        run: dotnet workload install ios
+
+      - name: Build
+        run: >
+          dotnet build WorkoutLog.iOS/WorkoutLog.iOS.csproj
+          -c Release -r ios-arm64
+          -p:EnableCodeSigning=false
+          -p:ValidateXcodeVersion=false
+          -p:ApplicationVersion=${{ github.run_number }}
+
+      - name: Package unsigned IPA
+        run: |
+          APP=$(find WorkoutLog.iOS/bin/Release -type d -name "*.app" | head -1)
+          echo "App bundle: $APP"
+          mkdir Payload
+          cp -R "$APP" Payload/
+          zip -qry Allenamento.ipa Payload
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Allenamento-ipa
+          path: Allenamento.ipa
+
+      - name: Publish to the "latest" release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Ultima build
+          body: Build ${{ github.run_number }} da ${{ github.sha }}. Scarica Allenamento.ipa e aprilo con SideStore/AltStore.
+          files: Allenamento.ipa
+          make_latest: true

@@ -1,0 +1,180 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WorkoutLog.ViewModels"
+             xmlns:views="using:WorkoutLog.Views"
+             x:Class="WorkoutLog.App"
+             RequestedThemeVariant="Dark">
+
+    <Application.Resources>
+        <Color x:Key="BgColor">#0D0E11</Color>
+        <SolidColorBrush x:Key="Bg" Color="#0D0E11" />
+        <SolidColorBrush x:Key="Surface" Color="#17191E" />
+        <SolidColorBrush x:Key="Surface2" Color="#24272F" />
+        <SolidColorBrush x:Key="Surface3" Color="#30343D" />
+        <SolidColorBrush x:Key="Line" Color="#2A2E36" />
+        <SolidColorBrush x:Key="Ink" Color="#F4F5F7" />
+        <SolidColorBrush x:Key="Muted" Color="#8D929C" />
+        <SolidColorBrush x:Key="Accent" Color="#C6F24E" />
+        <SolidColorBrush x:Key="AccentPressed" Color="#A9D332" />
+        <SolidColorBrush x:Key="AccentSoft" Color="#26C6F24E" />
+        <SolidColorBrush x:Key="OnAccent" Color="#0D0E11" />
+        <SolidColorBrush x:Key="Warm" Color="#FFB547" />
+    </Application.Resources>
+
+    <Application.DataTemplates>
+        <DataTemplate DataType="vm:HomeViewModel"><views:HomeView /></DataTemplate>
+        <DataTemplate DataType="vm:WorkoutViewModel"><views:WorkoutView /></DataTemplate>
+        <DataTemplate DataType="vm:DoneViewModel"><views:DoneView /></DataTemplate>
+    </Application.DataTemplates>
+
+    <Application.Styles>
+        <FluentTheme />
+
+        <Style Selector="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource Ink}" />
+        </Style>
+        <Style Selector="TextBlock.muted">
+            <Setter Property="Foreground" Value="{StaticResource Muted}" />
+        </Style>
+        <Style Selector="TextBlock.label">
+            <Setter Property="Foreground" Value="{StaticResource Muted}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="LetterSpacing" Value="1.2" />
+        </Style>
+
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="{StaticResource Surface}" />
+            <Setter Property="CornerRadius" Value="22" />
+            <Setter Property="Padding" Value="18" />
+        </Style>
+        <Style Selector="Border.chip">
+            <Setter Property="Background" Value="{StaticResource Surface2}" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="9,5" />
+        </Style>
+
+        <!-- Buttons: flat colours, no Fluent hover chrome. -->
+        <Style Selector="Button">
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="{StaticResource Ink}" />
+            <Setter Property="Background" Value="{StaticResource Surface2}" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource Surface3}" />
+            <Setter Property="Foreground" Value="{StaticResource Ink}" />
+        </Style>
+        <Style Selector="Button:pressed">
+            <Setter Property="RenderTransform" Value="scale(0.97)" />
+        </Style>
+
+        <Style Selector="Button.primary">
+            <Setter Property="Background" Value="{StaticResource Accent}" />
+            <Setter Property="Foreground" Value="{StaticResource OnAccent}" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="17" />
+            <Setter Property="MinHeight" Value="56" />
+            <Setter Property="CornerRadius" Value="18" />
+        </Style>
+        <Style Selector="Button.primary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource AccentPressed}" />
+            <Setter Property="Foreground" Value="{StaticResource OnAccent}" />
+        </Style>
+
+        <Style Selector="Button.flat">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        </Style>
+        <Style Selector="Button.flat:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <Style Selector="Button.round">
+            <Setter Property="Width" Value="38" />
+            <Setter Property="Height" Value="38" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="CornerRadius" Value="19" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+
+        <Style Selector="Button.check">
+            <Setter Property="Width" Value="46" />
+            <Setter Property="Height" Value="46" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="CornerRadius" Value="23" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="{StaticResource Muted}" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="BorderBrush" Value="{StaticResource Surface3}" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="Button.check.done">
+            <Setter Property="Background" Value="{StaticResource Accent}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+            <Setter Property="Foreground" Value="{StaticResource OnAccent}" />
+        </Style>
+        <Style Selector="Button.check.done:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource AccentPressed}" />
+            <Setter Property="BorderBrush" Value="{StaticResource AccentPressed}" />
+            <Setter Property="Foreground" Value="{StaticResource OnAccent}" />
+        </Style>
+
+        <Style Selector="Button.pill">
+            <Setter Property="Padding" Value="12,6" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+
+        <!-- Number entry inside a set row. -->
+        <Style Selector="TextBox.value">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="MinHeight" Value="38" />
+            <Setter Property="MinWidth" Value="0" />
+        </Style>
+        <Style Selector="TextBox.value /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style Selector="TextBox.value:pointerover /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="TextBox.value:focus /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="{StaticResource Surface3}" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+
+        <Style Selector="TextBox.note">
+            <Setter Property="Background" Value="{StaticResource Surface2}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="Padding" Value="12,10" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="AcceptsReturn" Value="True" />
+        </Style>
+        <Style Selector="TextBox.note /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="{StaticResource Surface2}" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style Selector="TextBox.note:focus /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="{StaticResource Surface3}" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+    </Application.Styles>
+</Application>

@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WorkoutLog.ViewModels"
+             x:Class="WorkoutLog.Views.DoneView"
+             x:DataType="vm:DoneViewModel">
+    <Grid RowDefinitions="*,Auto" Margin="24">
+        <StackPanel VerticalAlignment="Center" Spacing="14">
+            <Border Width="96" Height="96" CornerRadius="48" Background="{StaticResource Accent}" HorizontalAlignment="Left">
+                <TextBlock Text="✓" FontSize="48" FontWeight="Black" Foreground="{StaticResource OnAccent}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+            <TextBlock Text="{Binding Title}" FontSize="32" FontWeight="Bold" TextWrapping="Wrap" />
+            <TextBlock Classes="muted" Text="{Binding SlotLabel}" FontSize="15" />
+            <TextBlock Text="{Binding Summary}" FontSize="17" FontWeight="SemiBold" />
+            <Border Classes="card" Padding="14">
+                <TextBlock Classes="muted" Text="{Binding SaveInfo}" TextWrapping="Wrap" FontSize="14" />
+            </Border>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Spacing="10">
+            <Button Classes="primary" Content="Torna agli split" HorizontalAlignment="Stretch" Command="{Binding HomeCommand}" />
+            <Button Content="Condividi Excel" HorizontalAlignment="Stretch" MinHeight="52" CornerRadius="18"
+                    FontWeight="SemiBold" Command="{Binding ShareCommand}" />
+        </StackPanel>
+    </Grid>
+</UserControl>
